@@ -8,23 +8,23 @@ import com.haha.common.entity.TestEntity;
  * @author xj
  *
  */
-public enum DasReq {
+public enum HaDasReq {
     
     TEST("",1,TestEntity.class)
     ;
 
-    private String url;
+    private String path;
     private int maxRetryCount;
     private Class<?> entityClass;
 
-    private DasReq(String url, int maxRetryCount, Class<?> entityClass) {
-        this.url = url;
+    private HaDasReq(String path, int maxRetryCount, Class<?> entityClass) {
+        this.path = path;
         this.maxRetryCount = maxRetryCount;
         this.entityClass = entityClass;
     }
 
-    public String getUrl() {
-        return url;
+    public String getPath() {
+        return path;
     }
 
     public int getMaxRetryCount() {
