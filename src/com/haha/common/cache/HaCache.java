@@ -20,6 +20,13 @@ public abstract class HaCache {
     public abstract void init(Context context);
     
     /**
+     * put url content to cache
+     * @param url
+     * @param content
+     */
+    public abstract void put(String url, String content);
+    
+    /**
      * get url content from cache asynchronized
      * @param url
      * @param handler

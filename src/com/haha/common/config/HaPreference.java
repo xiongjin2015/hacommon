@@ -82,7 +82,9 @@ public class HaPreference {
         PREF_MAC("pref_mac", "000000000000"),
 
         PREF_WORK_DIR("pref_work_dir", ""),
-        PREF_MEDIA_DIR("pref_media_dir", "");
+        PREF_MEDIA_DIR("pref_media_dir", ""),
+        
+        PREF_CACHE_RULES_LAST_UPDATE_TIME("pref_cache_rules_last_update_time", "0");
 
         private String key;
         private String defaultValue;

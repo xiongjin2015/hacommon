@@ -1,14 +1,29 @@
+
 package com.haha.common.cache;
 
 public interface HaCacheHandler {
-    
-    public static class SCache{
+
+    /**
+     * recall method for success cache accessing
+     * 
+     * @param scache
+     */
+    public void onSCache(SCache scache);
+
+    /**
+     * recall method for error cache accessing
+     * 
+     * @param ecache
+     */
+    public void onECache(ECache ecache);
+
+    public static class SCache {
         private String url;
         private long timeUsed;
         private boolean expired;
         private String content;
-        
-        public SCache(String url, long timeUsed, boolean expired, String content){
+
+        public SCache(String url, long timeUsed, boolean expired, String content) {
             this.url = url;
             this.timeUsed = timeUsed;
             this.expired = expired;
@@ -31,16 +46,16 @@ public interface HaCacheHandler {
             return expired;
         }
     }
-    
-    public static class ECache{
+
+    public static class ECache {
         public final static int ERROR_CACHE = 401;
-        
+
         private String url;
         private long timeUsed;
         private int errCode;
         private String errMsg;
-        
-        public ECache(String url, long timeUsed, int errCode, String errMsg){
+
+        public ECache(String url, long timeUsed, int errCode, String errMsg) {
             this.url = url;
             this.timeUsed = timeUsed;
             this.errCode = errCode;
@@ -63,17 +78,5 @@ public interface HaCacheHandler {
             return timeUsed;
         }
     }
-    
-    /**
-     * recall method for success cache accessing
-     * @param scache
-     */
-    public void onSCache(SCache scache);
-    
-    /**
-     * recall method for error cache accessing
-     * @param ecache
-     */
-    public void onECache(ECache ecache);
 
 }

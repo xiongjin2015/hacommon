@@ -2,7 +2,9 @@ package com.haha.common.init;
 
 import android.content.Context;
 
+import com.haha.common.cache.HaCache;
 import com.haha.common.config.HaConfig;
+import com.haha.common.config.HaDirMgmt;
 import com.haha.common.config.HaPreference;
 import com.haha.common.haudid.HaAppType;
 import com.haha.common.task.HaExecutor;
@@ -22,6 +24,12 @@ public final class HaInit {
         
         //initialize the preference singleton instance
         HaPreference.getInstance().init(context);
+        
+        //initialize directory management singleton instance, depends on:HaPreference module
+        HaDirMgmt.getInstance().init(context, appType);
+        
+        //initialize the cache module,
+        HaCache.getInstance().init(context);
     }
 
 }

@@ -2,6 +2,10 @@ package com.haha.common.cache;
 
 import android.content.Context;
 
+import com.haha.common.cache.HaCacheRules.Rule;
+import com.haha.common.logger.Logcat;
+import com.haha.common.task.HaExecutor;
+
 public class HaCacheImpl extends HaCache {
     
     private static final String TAG = "HaCacheImpl";
@@ -11,53 +15,48 @@ public class HaCacheImpl extends HaCache {
 
     @Override
     public void init(Context context) {
-        // TODO Auto-generated method stub
-
+        HaCacheFiles.getInstance().init();
+        rules.init(context);
     }
 
+    /**
+     * put content to cache file with url by key
+     * @param key
+     * @param content
+     */
+    @Override
+    public void put(String url, String content) {
+        if(this.rules.needCache(url)){
+            HaExecutor.getInstance().submit(new HaCacheWriteTask(url, content));
+            Logcat.d(TAG, "put cache for url: "+url);
+        }
+    }
+    
     @Override
     public boolean get(String url, HaCacheHandler handler) {
-        // TODO Auto-generated method stub
+        Rule rule = this.rules.getRule(url);
+        if(rule != null){
+            if(HaCacheFiles.getInstance().isHit(url)){
+                boolean expired = HaCacheFiles.getInstance().isExpired(url, rule.getExpireInMillis());
+                if(rule.isStrong()){
+                    HaExecutor.getInstance().submit(new HaCacheReadTask(url, handler, expired));
+                    if(!expired){
+                        return true;
+                    }
+                }else{
+                    if(!expired){
+                        HaExecutor.getInstance().submit(new HaCacheReadTask(url, handler, expired));
+                        return true;
+                    }
+                }
+                
+                Logcat.d(TAG, "get cache for url: " + url);
+            }
+        }
+        
         return false;
     }
-    
-    
-    public static class Rule{
-        private String pattern;
-        private long expireInMillis;
-        private boolean strong;//是强缓存还是弱缓存
-        
-        public boolean match(String url){
-            if(url == null)
-                return false;
-            
-            return url.matches(this.pattern);
-        }
 
-        public String getPattern() {
-            return pattern;
-        }
 
-        public void setPattern(String pattern) {
-            this.pattern = pattern;
-        }
-
-        public long getExpireInMillis() {
-            return expireInMillis;
-        }
-
-        public void setExpireInMillis(long expireInMillis) {
-            this.expireInMillis = expireInMillis;
-        }
-
-        public boolean isStrong() {
-            return strong;
-        }
-
-        public void setStrong(boolean strong) {
-            this.strong = strong;
-        }
-        
-    }
 
 }

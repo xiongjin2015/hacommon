@@ -69,6 +69,32 @@ public final class HaDirMgmt {
         return flag1 && flag2;
     }
     
+    
+    /**
+     * get the relate directory path
+     * @param type: directory type
+     * @return
+     * request directory path of relate type, or ""
+     */
+    public String getPath(WorkDir type){
+        String path = "";
+        if(this.workDir != null){
+            boolean flag = HaDir.createDirs(this.workDir);
+            if(!flag){
+                Logcat.e(TAG, "create work directory: "+this.workDir+" failed!");
+            }
+            
+            path = this.workDir + type.getPath();
+            flag = HaDir.createDirs(path);
+            
+            if(!flag){
+                Logcat.e(TAG, "create directory: "+path+" failed!");
+            }
+        }
+        
+        return path;
+    }
+    
     private boolean initWorkDir(Context context) {
         /*try to get the work directory from shared preferences*/
         workDir = getWorkDir();
@@ -286,7 +312,9 @@ public final class HaDirMgmt {
 
         CACHE("/cache"),
         CACHE_DAS("/cache/das"),
-        CACHE_IMG("/cache/img");
+        CACHE_IMG("/cache/img"),
+        
+        CONFIG("/config");
 
         private String path;
         
