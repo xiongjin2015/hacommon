@@ -3,6 +3,7 @@ package com.haha.common.das;
 
 import android.content.Context;
 
+import com.haha.common.cache.HaCache;
 import com.haha.common.logger.Logcat;
 import com.haha.http.HaHttp;
 import com.haha.http.HaHttpClient;
@@ -12,7 +13,7 @@ public class HaDasImpl extends HaDas {
 
     private final static String TAG = "HaDasImpl";
 
-    private boolean useCache = true;
+    private boolean useCache = true; // defalut true:use Cache;
 
     /**
      * public parameters for all request
@@ -41,59 +42,76 @@ public class HaDasImpl extends HaDas {
     @Override
     public String get(HaDasReq type, HaHttpParams params, HaHandler handler, boolean enableCache)
             throws Exception {
-        String url = this.buildUrl(type, params);           
-        
+        String url = this.buildUrl(type, params);
+
         this.get(url, type.getEntityClass(), type.getMaxRetryCount(), handler, enableCache);
-        
+
         return url;
     }
 
     @Override
     public String get(String url, Class<?> entityClass, HaHandler handler) throws Exception {
-        // TODO Auto-generated method stub
-        return null;
+        HaDasHandler dasHandler = new HaDasHandler(handler, entityClass);
+        if (this.useCache) {
+            boolean hit = HaCache.getInstance().get(url, dasHandler);
+            if (!hit) {
+                this.httpclient.get(url, dasHandler);
+            }
+        } else {
+            this.httpclient.get(url, dasHandler);
+        }
+
+        Logcat.d(TAG, "request: " + url);
+        return url;
     }
 
     @Override
     public String get(String url, Class<?> entityClass, int maxRetryCount, HaHandler handler)
             throws Exception {
         HaDasHandler dasHandler = new HaDasHandler(handler, entityClass);
-        if(this.useCache){
-            boolean hit = true;
-            if(!hit){
-                this.httpclient.get(url, maxRetryCount, dasHandler);    
+        if (this.useCache) {
+            boolean hit = HaCache.getInstance().get(url, dasHandler);
+            if (!hit) {
+                this.httpclient.get(url, maxRetryCount, dasHandler);
             }
-        }else{
+        } else {
             this.httpclient.get(url, maxRetryCount, dasHandler);
         }
-        
-        Logcat.d(TAG, "request: "+url);
+
+        Logcat.d(TAG, "request: " + url);
         return url;
     }
-    
+
     @Override
     public String get(String url, Class<?> entityClass, int maxRetryCount, HaHandler handler,
             boolean enableCache) throws Exception {
         HaDasHandler dasHandler = new HaDasHandler(handler, entityClass);
-        if(this.useCache && enableCache){
-            boolean hit = true;
-            if(!hit){
-                this.httpclient.get(url, maxRetryCount, dasHandler);    
+        if (this.useCache && enableCache) {
+            boolean hit = HaCache.getInstance().get(url, dasHandler);
+            if (!hit) {
+                this.httpclient.get(url, maxRetryCount, dasHandler);
             }
-        }else{
+        } else {
             this.httpclient.get(url, maxRetryCount, dasHandler);
         }
-        
-        Logcat.d(TAG, "request: "+url);
+
+        Logcat.d(TAG, "request: " + url);
         return url;
     }
-    
 
     private synchronized String buildUrl(HaDasReq type, HaHttpParams params) throws Exception {
         String url = type.getPath() + "?" + HaHttpParams.newParams().mergeToEnd(params).encode();
         return url;
     }
 
+    @Override
+    public void enableCache() {
+        this.useCache = true;
+    }
 
+    @Override
+    public void disableCache() {
+        this.useCache = false;
+    }
 
 }

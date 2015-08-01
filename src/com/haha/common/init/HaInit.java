@@ -6,6 +6,7 @@ import com.haha.common.cache.HaCache;
 import com.haha.common.config.HaConfig;
 import com.haha.common.config.HaDirMgmt;
 import com.haha.common.config.HaPreference;
+import com.haha.common.das.HaDas;
 import com.haha.common.haudid.HaAppType;
 import com.haha.common.task.HaExecutor;
 
@@ -30,6 +31,9 @@ public final class HaInit {
         
         //initialize the cache module,
         HaCache.getInstance().init(context);
+        
+        //initialize the data service module, depends on: HaApp/HaCache/HaPreference
+        HaDas.getInstance().init(context);
     }
 
 }
