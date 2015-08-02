@@ -1,7 +1,7 @@
 
 package com.haha.common.das;
 
-import com.haha.common.entity.TestEntity;
+import com.haha.common.entity.MainEntity;
 
 /**
  * all requests set
@@ -10,7 +10,7 @@ import com.haha.common.entity.TestEntity;
  */
 public enum HaDasReq {
     
-    TEST("",1,TestEntity.class)
+    BAIDU_MAIN_INDEX("http://app.video.baidu.com/adnativeindex/?version=7.16.1",1,MainEntity.class)
     ;
 
     private String path;
