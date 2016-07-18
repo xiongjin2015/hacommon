@@ -103,6 +103,51 @@ public class HaDasImpl extends HaDas {
         String url = type.getPath() + "?" + HaHttpParams.newParams().mergeToEnd(params).encode();
         return url;
     }
+    
+    /**
+     * post方式
+     * 参数格式：json
+     * @param type
+     * @param params
+     * @param handler
+     * @return
+     * @throws Exception
+     */
+    @Override
+    public String post(HaDasReq type, HaJsonHttpParams params, HaHandler handler) throws Exception {
+        String url = this.buildUrl(type, params);
+
+        this.post(url, type.getEntityClass(), type.getMaxRetryCount(), handler);
+
+        return url;
+    }
+    
+    @Override
+    public String post(String url, Class<?> entityClass, int maxRetryCount, HaHandler handler)
+            throws Exception {
+        HaDasHandler dasHandler = new HaDasHandler(handler, entityClass);
+        if (this.useCache) {
+            boolean hit = HaCache.getInstance().get(url, dasHandler);
+            if (!hit) {
+                this.httpclient.post(url, maxRetryCount, dasHandler);
+            }
+        } else {
+            this.httpclient.post(url, maxRetryCount, dasHandler);
+        }
+        return url;
+    }
+    
+    /**
+     * 拼接json串
+     * @param type
+     * @param params
+     * @return
+     * @throws Exception
+     */
+    private synchronized String buildUrl(HaDasReq type, HaJsonHttpParams params) throws Exception {
+        String url = type.getPath() + "?" + params.build();
+        return url;
+    }
 
     @Override
     public void enableCache() {
