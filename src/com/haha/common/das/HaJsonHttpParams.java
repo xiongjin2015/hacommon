@@ -1,6 +1,4 @@
-package com.haha.http;
-
-import com.ssports.mobile.common.config.SSApp;
+package com.haha.common.das;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -52,11 +50,11 @@ public class HaJsonHttpParams {
 
         //device
         JSONObject device = new JSONObject();
-        device.put("appVersion", SSApp.getInstance().getVerion());
-        device.put("userToken",SSApp.getInstance().getUserToken());
-        device.put("channelCode",SSApp.getInstance().getSid());
-        device.put("systemVersion",SSApp.getInstance().getsVerison());
-        device.put("deviceType",SSApp.getInstance().getType());
+        //device.put("appVersion", SSApp.getInstance().getVerion());
+        //device.put("userToken",SSApp.getInstance().getUserToken());
+        //device.put("channelCode",SSApp.getInstance().getSid());
+        //device.put("systemVersion",SSApp.getInstance().getsVerison());
+        //device.put("deviceType",SSApp.getInstance().getType());
 
 
         jb.put("action", action);
